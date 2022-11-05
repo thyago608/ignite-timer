@@ -1,6 +1,6 @@
 ## Sobre
 
-O projeto **Ignite Time** é um projeto que está sendo desenvolvido dentro da **Trilha Ignite 2022**.
+O projeto **Ignite Timer** é um projeto que está sendo desenvolvido dentro da **Trilha Ignite 2022**.
 
 ---
 
