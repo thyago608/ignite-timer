@@ -1,9 +1,8 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useState } from 'react'
 import { HandPalm, Play } from 'phosphor-react'
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
-import { differenceInSeconds } from 'date-fns'
 import {
   HomeContainer,
   StartCountdownButton,
@@ -34,6 +33,8 @@ interface Cycle {
 interface CycleContextData {
   activeCycle: Cycle | undefined
   activeCycleId: string | null
+  amountSecondsPassed: number
+  setSecondsPassed: (seconds: number) => void
   markCurrentCycleAsFinished: () => void
 }
 
@@ -41,14 +42,17 @@ export const CyclesContext = createContext({} as CycleContextData)
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
-  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
+  const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
       task: '',
       minutesAmount: 0,
     },
   })
+
+  const { handleSubmit, watch, reset } = newCycleForm
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
   const task = watch('task')
@@ -102,13 +106,23 @@ export function Home() {
     )
   }
 
+  function setSecondsPassed(seconds: number) {}
+
   return (
     <HomeContainer>
       <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
         <CyclesContext.Provider
-          value={{ activeCycle, activeCycleId, markCurrentCycleAsFinished }}
+          value={{
+            activeCycle,
+            activeCycleId,
+            markCurrentCycleAsFinished,
+            amountSecondsPassed,
+            setSecondsPassed,
+          }}
         >
-          <NewCycleForm />
+          <FormProvider {...newCycleForm}>
+            <NewCycleForm />
+          </FormProvider>
           <CountDown />
         </CyclesContext.Provider>
         {activeCycle ? (
