@@ -39,6 +39,7 @@ export function Home() {
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     creteNewCycle(data)
+
     reset()
   }
 
